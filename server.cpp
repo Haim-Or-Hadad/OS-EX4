@@ -21,7 +21,6 @@
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10	 // how many pending connections queue will hold
-//using namespace ex4;
 stack global_stack;
 
 /**
@@ -40,6 +39,7 @@ void* thread_handler(void *new_fd){
     char recv_data[1024];
     while (1)
     {
+        //recv(socket, recv_data, 1024,0) != -1;
         memset(recv_data, 0, 1024);
         if(recv(socket,recv_data,1024,0)==-1){
             perror("ERR:recv error");
@@ -52,7 +52,7 @@ void* thread_handler(void *new_fd){
             cout<<"pushed "<<str<<endl;
         }
         else if(StartsWith(recv_data,"POP")){
-            string ans=global_stack.POP();
+            string ans=global_stack.POP()+'\0';;
             if (send(socket,ans.data(),ans.size(),0)==-1)
             {
                 perror("send");
@@ -60,19 +60,20 @@ void* thread_handler(void *new_fd){
             cout<<"sent "<<ans.data()<<endl;
         }
         else if(StartsWith(recv_data,"TOP")){
-            string ans=global_stack.TOP();
+            string ans=global_stack.TOP()+'\0';
             if (send(socket,ans.data(),ans.size(),0)==-1)
             {
                 perror("send");
             }
             cout<<"sent "<<ans.data()<<endl;
         }
-        else
-            cout<<"got "<<recv_data<<endl;
+        //else
+            //cout<<"got "<<recv_data<<endl;
         
     }
     close(socket);
 } 
+
 
 void sigchld_handler(int s)
 {

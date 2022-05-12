@@ -70,4 +70,3 @@ public:
     friend ostream & operator<<(ostream& out, const stack &st);
     
 };
-
